@@ -19,3 +19,16 @@ image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 # Ejecutar inferencia: recibe lista de imágenes numpy RGB
 # Retorna un objeto Prediction con depth, extrinsics, intrinsics, etc.
 prediction = model.inference([image_rgb])
+
+# El depth map como array numpy float32
+depth = prediction.depth[0]  # shape (H, W)
+
+# Guardar como imagen de falso color para visualizar
+depth_normalized = cv2.normalize(depth, None, 0, 255, cv2.NORM_MINMAX, cv2.CV_8U)
+depth_color = cv2.applyColorMap(depth_normalized, cv2.COLORMAP_INFERNO)
+cv2.imwrite("depth_color.png", depth_color)
+
+# O guardar el depth raw en float32 para procesamiento posterior
+np.save("depth_raw.npy", depth)
+
+print(f"Depth map guardado: depth_color.png ({depth.shape})")
